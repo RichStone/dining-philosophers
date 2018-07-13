@@ -52,5 +52,15 @@ public class Philosopher {
 			this.rightHand = "Right Fork";
 			return res;
 		});
+		
+		http.get("/give-left-fork", (req, res) -> {
+			this.leftHand = "nothing";
+			return res;
+		});
+		
+		http.get("/give-right-fork", (req, res) -> {
+			this.rightHand = "nothing";
+			return res;
+		});
 	}
 }

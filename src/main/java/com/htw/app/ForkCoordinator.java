@@ -22,6 +22,17 @@ public class ForkCoordinator {
 		http.get("/", (q, a) -> "Hello from FORK COORDINATOR from port " + port);	
 	}
 	
+	private void takeLeftFork(int port) throws UnirestException {
+		HttpResponse<String> stringResponse = Unirest.get("http://localhost:" + port + "/give-left-fork")
+    			.asString();
+		System.out.println("TOOK Left Fork from PHILOSOPHER on port " + port);
+	}
+
+	private void takeRightFork(int port) throws UnirestException {
+		HttpResponse<String> stringResponse = Unirest.get("http://localhost:" + port + "/give-right-fork")
+    			.asString();
+		System.out.println("TOOK Left Fork from PHILOSOPHER on port " + port);
+	}
 	
 	public void giveLeftFork(int port) throws UnirestException {
 		HttpResponse<String> stringResponse = Unirest.get("http://localhost:" + port + "/take-left-fork")
@@ -36,27 +47,36 @@ public class ForkCoordinator {
 	}
 	
 	public void coordinate() throws UnirestException, InterruptedException {
+		
+		System.out.println("\nStart coordinating\n");
+		
 		int lastPhilosopherIndex = this.portPool.length - 1;
-		int firstEaterPort = portPool[0];
-		int secondEaterPort = portPool[2];
+		int firstCurrentEaterPort = portPool[0];
+		int secondCurrentEaterPort = portPool[2];
 		
 		while(true) {
-			TimeUnit.SECONDS.sleep(15);
 			
-			firstEaterPort += 1;
-			if(firstEaterPort > portPool[lastPhilosopherIndex]) {
-				firstEaterPort = portPool[0];
+			takeRightFork(firstCurrentEaterPort);
+			takeLeftFork(firstCurrentEaterPort);
+			firstCurrentEaterPort += 1;
+			if(firstCurrentEaterPort > portPool[lastPhilosopherIndex]) {
+				firstCurrentEaterPort = portPool[0];
 			}
-			giveRightFork(firstEaterPort);
-			giveLeftFork(firstEaterPort);
+			giveRightFork(firstCurrentEaterPort);
+			giveLeftFork(firstCurrentEaterPort);
 			
-			secondEaterPort += 1;
-			if(secondEaterPort > portPool[lastPhilosopherIndex]) {
-				secondEaterPort = portPool[0];
+			takeRightFork(secondCurrentEaterPort);
+			takeLeftFork(secondCurrentEaterPort);
+			secondCurrentEaterPort += 1;
+			if(secondCurrentEaterPort > portPool[lastPhilosopherIndex]) {
+				secondCurrentEaterPort = portPool[0];
 			}
-			giveRightFork(secondEaterPort);
-			giveLeftFork(secondEaterPort);
+			giveRightFork(secondCurrentEaterPort);
+			giveLeftFork(secondCurrentEaterPort);
+			
+			System.out.println("\nRound over\n");
+			System.out.println("Next round in 30 sec ...\n");
+			TimeUnit.SECONDS.sleep(30);
 		}
 	}
-	
 }

@@ -25,7 +25,17 @@ public class DiningPhilosophers
     	Philosopher p4 = new Philosopher(8084, forksCoordinator.emptyToken, forksCoordinator.emptyToken);
     	Philosopher p5 = new Philosopher(8085, forksCoordinator.emptyToken, forksCoordinator.emptyToken);
     	
-		TimeUnit.SECONDS.sleep(5);
+    	TimeUnit.SECONDS.sleep(1);
+    	
+    	System.out.println("Philosopher 8081 is " + p1.status);
+    	System.out.println("Philosopher 8082 is " + p2.status);
+    	System.out.println("Philosopher 8083 is " + p3.status);
+    	System.out.println("Philosopher 8084 is " + p4.status);
+    	System.out.println("Philosopher 8085 is " + p5.status);
+    	
+    	System.out.println("\nNext round in 10 seconds...");
+    	TimeUnit.SECONDS.sleep(10);
+    	System.out.println("\nGO!\n");
     	
     	forksCoordinator.coordinate();
     }
