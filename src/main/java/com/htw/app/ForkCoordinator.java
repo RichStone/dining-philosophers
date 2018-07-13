@@ -1,5 +1,7 @@
 package com.htw.app;
 
+import java.util.concurrent.TimeUnit;
+
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -22,16 +24,39 @@ public class ForkCoordinator {
 	
 	
 	public void giveLeftFork(int port) throws UnirestException {
-		HttpResponse<String> stringResponse = Unirest.get("http://localhost:" + port + "/take-left-fork/")
+		HttpResponse<String> stringResponse = Unirest.get("http://localhost:" + port + "/take-left-fork")
     			.asString();
 		System.out.println("Passed Left Fork to PHILOSOPHER on port " + port);
 	}
 	
 	public void giveRightFork(int port) throws UnirestException {
-		HttpResponse<String> stringResponse = Unirest.get("http://localhost:" + port + "/take-right-fork/")
+		HttpResponse<String> stringResponse = Unirest.get("http://localhost:" + port + "/take-right-fork")
     			.asString();
 		System.out.println("Passed Right Fork to PHILOSOPHER on port " + port);
 	}
 	
+	public void coordinate() throws UnirestException, InterruptedException {
+		int lastPhilosopherIndex = this.portPool.length - 1;
+		int firstEaterPort = portPool[0];
+		int secondEaterPort = portPool[2];
+		
+		while(true) {
+			TimeUnit.SECONDS.sleep(15);
+			
+			firstEaterPort += 1;
+			if(firstEaterPort > portPool[lastPhilosopherIndex]) {
+				firstEaterPort = portPool[0];
+			}
+			giveRightFork(firstEaterPort);
+			giveLeftFork(firstEaterPort);
+			
+			secondEaterPort += 1;
+			if(secondEaterPort > portPool[lastPhilosopherIndex]) {
+				secondEaterPort = portPool[0];
+			}
+			giveRightFork(secondEaterPort);
+			giveLeftFork(secondEaterPort);
+		}
+	}
 	
 }

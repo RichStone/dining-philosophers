@@ -29,7 +29,7 @@ public class Philosopher {
 		
 		http.get("/", (req, res) -> 
 		{
-			if (rightHand.equals("Right Fork") && leftHand.equals("Left Fork")) {
+			if (this.rightHand.equals("Right Fork") && this.leftHand.equals("Left Fork")) {
 				this.status = "eating";
 			} else {
 				this.status = "thinking";
