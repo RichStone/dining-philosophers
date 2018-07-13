@@ -9,14 +9,19 @@ import spark.Service;
 public class Philosopher {
 	int port;
 	String status;
-	String rightFork;
-	String leftFork;
+	String rightHand;
+	String leftHand;
 	
-	public Philosopher(int port, String rightFork) {
+	public Philosopher(int port, String rightHand, String leftHand) {
 		this.port = port;
-		this.status = "thinking";
-		this.rightFork = rightFork;
-		this.leftFork = "Nothing";
+		this.rightHand = rightHand;
+		this.leftHand = leftHand;
+		
+		if (rightHand.equals("Right Fork") && leftHand.equals("Left Fork")) {
+			this.status = "eating";
+		} else {
+			this.status = "thinking";
+		}
 		
 		Service http = Service.ignite()
                 .port(port)
@@ -24,12 +29,28 @@ public class Philosopher {
 		
 		http.get("/", (req, res) -> 
 		{
+			if (rightHand.equals("Right Fork") && leftHand.equals("Left Fork")) {
+				this.status = "eating";
+			} else {
+				this.status = "thinking";
+			}
+			
 			String textRespond =
 				"Hello from PHILOSOPHER from port " + this.port 
 				+ "\nThe philosopher is currently " + this.status + " ... "
-				+ "\nIn his right hand he holds " + this.rightFork + ", "
-				+ "\nin his left hand he holds " + this.leftFork;
+				+ "\nIn his right hand he holds " + this.rightHand + ", "
+				+ "\nin his left hand he holds " + this.leftHand;
 			return textRespond;
+		});
+		
+		http.get("/take-left-fork", (req, res) -> {
+			this.leftHand = "Left Fork";
+			return res;
+		});
+		
+		http.get("/take-right-fork", (req, res) -> {
+			this.rightHand = "Right Fork";
+			return res;
 		});
 	}
 }

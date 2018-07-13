@@ -21,9 +21,17 @@ public class ForkCoordinator {
 	}
 	
 	
-	public void giveFork() throws UnirestException {
-		int port = 8083;
-		HttpResponse<String> stringResponse = Unirest.get("http://localhost:" + port + "/get-forks/")
+	public void giveLeftFork(int port) throws UnirestException {
+		HttpResponse<String> stringResponse = Unirest.get("http://localhost:" + port + "/take-left-fork/")
     			.asString();
+		System.out.println("Passed Left Fork to PHILOSOPHER on port " + port);
 	}
+	
+	public void giveRightFork(int port) throws UnirestException {
+		HttpResponse<String> stringResponse = Unirest.get("http://localhost:" + port + "/take-right-fork/")
+    			.asString();
+		System.out.println("Passed Right Fork to PHILOSOPHER on port " + port);
+	}
+	
+	
 }
